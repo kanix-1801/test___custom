@@ -202,7 +202,7 @@ public with sharing class ers_DatatableController {
         Map<String, Schema.SObjectField> fieldMap = objDescribe.fields.getMap();
         system.debug('fieldMap-->199-> '+fieldMap);
 
-        for (String fieldName : fields.deleteWhitespace().split(',')) {
+        for (String fieldName : fields.split(',')) {
             String formulaField ;
             Schema.SObjectField fieldItem = fieldMap.get(fieldName);
             if (fieldItem == null) {
@@ -222,8 +222,8 @@ public with sharing class ers_DatatableController {
                 System.debug('formulaField 222 : ' + formulaField);
                 // Add a synthetic formula field (not stored in Salesforce)
                 String customFieldName = formulaField.replaceAll('\\s+', '_') + '__f'; // must match what LWC or frontend expects
-                String customFieldLabel = 'test field lable';
-                // String customFieldLabel = formulaField;
+                // String customFieldLabel = 'test field lable';
+                String customFieldLabel = formulaField;
                 String customFieldType = 'DECIMAL'; // or 'number', 'currency', 'boolean', etc.
                 Integer customFieldScale = 0;
                 Integer customFieldLength = 0;
