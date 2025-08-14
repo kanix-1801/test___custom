@@ -1,0 +1,20 @@
+<aura:component implements="lightning:utilityItem" access="global">
+    <!-- Attributes -->
+    <aura:attribute name="channelName" type="String" default="/event/Urgent_Session_Assignment__e"/>
+    <aura:attribute name="subscription" type="Object"/>
+    <aura:attribute name="userId" type="String"/>
+    
+    <!-- Handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="destroy" value="{!this}" action="{!c.doDestroy}"/>
+    
+    <!-- Include Lightning utilities -->
+    <lightning:empApi aura:id="empApi"/>
+    <lightning:navigation aura:id="navService"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <!-- Component body (hidden) -->
+    <div class="slds-hide">
+        <p>Urgent Session Notifier Active for User: {!v.userId}</p>
+    </div>
+</aura:component>

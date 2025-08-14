@@ -1,0 +1,7 @@
+.THIS {
+    /* Component is hidden but active */
+}
+
+.THIS .slds-hide {
+    display: none;
+}

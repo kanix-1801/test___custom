@@ -1,0 +1,53 @@
+/*dynamic style for edited rows*/
+ th.line-without-quantity{
+     /*font-size: large;*/
+ }
+
+ th.line-with-quantity{
+ 	 font-weight: bold;
+
+ }
+
+ td.line-without-quantity{
+     /*font-size: large;*/
+ }
+
+ td.line-with-quantity{
+ 	 font-weight: bold;
+
+ }
+ 
+
+/*display not valid lines in error message when save*/
+.toastMessage.forceActionsText{
+     white-space : pre-line !important;
+}
+
+
+/*Numbers columns text in center*/
+.slds-grid_align-end, .slds-grid--align-end {
+    justify-content: center !important;
+}
+
+/*table width bigger*/
+.uiModal--horizontalForm .modal-container {
+    width: 100%;
+    max-width: 1700px;
+    min-width: 480px;
+}
+
+ /*remove wrap text*/
+ lightning-button-menu#primitive-header-action-button-menu-id-401 {
+     display: none;
+ }
+
+ /*remove X on header of Action modal*/
+ .modal-header.slds-modal__header.empty.slds-modal__header--empty {
+     display: none;
+ }
+ 
+ /*style when focus cell with clipboard */
+ .table-content tr.slds-hint-parent:focus-within {
+    background: lightgrey;
+}
+

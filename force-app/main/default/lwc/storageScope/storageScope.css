@@ -1,0 +1,93 @@
+/**
+ * Created by hadar.berman on 09/12/2021.
+ */
+
+ .container{
+    width: 90%;
+    margin: auto;
+}
+
+.select-content-list{
+    height: 183px;
+        background-color: white;
+        margin: 40px 30% 25px;
+        text-align: left;
+
+}
+
+.select-content-list-continue{
+    padding-top: 13px;
+}
+
+.table-section{
+    background-color: white;
+}
+
+.top-buttons{
+    height: 50px;
+    background-color: lightblue;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 11px;
+    text-align: left;
+    margin-top: 12px;
+}
+
+.table-main{
+    text-align: right !important;
+
+}
+
+.table-top {
+    height: 60px;
+    text-align: right;
+    padding-right: 28px;
+    padding-top: 17px;
+    font-size: larger;
+    font-weight: bold;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+   text-align: right;
+}
+
+th {
+  border: 1px solid;
+}
+td{
+  border: 1px solid;
+}
+tr {
+  border: 1px solid;
+}
+
+.custom-button-No{
+    margin-left: 4px;
+}
+
+.custom-selected-button{
+    font-weight: bold;
+    border-color: blue;
+}
+
+.loading-style{
+    position: 50%;
+}
+
+
+
+
+/*remove the wrap text*/
+.table-main.slds-button_icon-bare{
+    display: none;
+}
+
+.lightning-primitive-icon {
+    display: none;
+}
+
+.lightning-primitive-header-actions {
+    display: none;
+}

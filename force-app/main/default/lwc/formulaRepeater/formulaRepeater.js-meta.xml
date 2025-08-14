@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <!--Input
+            Selected Values for Picklist-->
+            <property name="picklistOptions" type="apex://usf3.FieldDescriptor[]" role="inputOnly" />
+
+            <!--Output
+            Values for Formula Fields-->
+            <property name="repeaterValues" type="String" label="Formula Output (Stringfy JSON)"
+                role="outputOnly" />
+            <property name="columnNames" type="String" label="Formula Column Names (CSV)"
+                role="outputOnly" />
+
+            <!--Output
+            Values for Summary Fields-->
+            <property name="summaryFieldValues" type="String" label="Summary Output (Stringfy JSON)"
+                role="outputOnly" />
+
+            <!--Output
+            Values for Validation Fields-->
+            <property name="validationFieldValues" type="String"
+                label="Validation Output (Stringfy JSON)" role="outputOnly" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,129 @@
+<template>
+
+ <!-- Formula Fields Part-->
+<lightning-card title="Formula Builder">
+    <template for:each={rows} for:item="row" for:index="index">
+        <div key={row.id} class="slds-grid slds-gutters slds-m-around_x-small">
+            
+            <!-- Field 1 Combobox -->
+            <div class="slds-col">
+                <lightning-combobox name="fField" label="Field 1" data-index={index} value={row.fField}
+                    options={picklistOptions} onchange={handleChange}>
+                </lightning-combobox>
+            </div>
+
+            <!-- Operator Combobox -->
+            <div class="slds-col">
+                <lightning-combobox name="operator" label="Operator" data-index={index} value={row.operator}
+                    options={operatorOptions} onchange={handleChange}>
+                </lightning-combobox>
+            </div>
+
+            <!-- Field 2 Combobox -->
+            <div class="slds-col">
+                <lightning-combobox name="sField" label="Field 2" data-index={index} value={row.sField}
+                    options={picklistOptions} onchange={handleChange}>
+                </lightning-combobox>
+            </div>
+
+            <!-- Column Name Input -->
+            <div class="slds-col">
+                <lightning-input name="Column_Name" label="Column Name" data-index={index} value={row.Column_Name}
+                    onchange={handleChange}>
+                </lightning-input>
+            </div>
+
+        </div>
+    </template>
+
+    <!-- Add and Remove Row Buttons -->
+    <div class="slds-m-around_medium">
+        <lightning-button label="Add Row" onclick={addRow}></lightning-button>
+        <lightning-button label="Remove Row" onclick={removeRow} class="slds-m-left_small"></lightning-button>
+    </div>
+</lightning-card>
+
+
+    <!-- Summary Fields Configration Part-->
+    <lightning-card title="Summary Builder">
+        <template for:each={summaryRows} for:item="row" for:index="index">
+            <div key={row.id} class="slds-grid slds-gutters slds-m-around_x-small">
+
+                <!-- Field Combobox -->
+                <div class="slds-col">
+                    <lightning-combobox name="SField" label="Field" data-index={index} options={picklistOptions}
+                        value={row.SField} onchange={handleSummaryChange}></lightning-combobox>
+                </div>
+
+                <!-- Operation Combobox -->
+                <div class="slds-col">
+                    <lightning-combobox name="operation" label="Operation" data-index={index}
+                        options={summaryTypeOptions} value={row.operation}
+                        onchange={handleSummaryChange}></lightning-combobox>
+                </div>
+
+                <!-- Column Name Input (FIXED name) -->
+                <div class="slds-col">
+                    <lightning-input name="Summary_Column_Name" label="Column Name" data-index={index}
+                        value={row.Summary_Column_Name} onchange={handleSummaryChange}></lightning-input>
+                </div>
+
+            </div>
+        </template>
+
+        <div class="slds-m-around_medium">
+            <lightning-button label="Add Summary" onclick={addSummaryRow}></lightning-button>
+            <lightning-button label="Remove Summary" onclick={removeSummaryRow}
+                class="slds-m-left_small"></lightning-button>
+        </div>
+    </lightning-card>
+
+
+
+
+    <!-- Validation Configration Part-->
+
+    <lightning-card title="Validation Builder">
+        <template for:each={validationRows} for:item="row" for:index="index">
+            <div key={row.id} class="slds-grid slds-gutters slds-m-around_x-small">
+
+                <!-- Validation Field Combobox -->
+                <div class="slds-col">
+                    <lightning-combobox name="vField" label="Validation Field" data-index={index}
+                        options={picklistOptions} value={row.vField}
+                        onchange={handleValidationChange}></lightning-combobox>
+                </div>
+
+                <!-- Operation Combobox -->
+                <div class="slds-col">
+                    <lightning-combobox name="vOperation" label="Operation" data-index={index}
+                        options={validationTypeOptions} value={row.vOperation}
+                        onchange={handleValidationChange}></lightning-combobox>
+                </div>
+
+                     <!-- Column Name Input -->
+                <div class="slds-col">
+                    <lightning-input name="Validation_Value" label="Validation Value" data-index={index}
+                        value={row.Validation_Value} onchange={handleValidationChange}></lightning-input>
+                </div>
+
+                <!-- Column Error Message Input -->
+                <div class="slds-col">
+                    <lightning-input name="validationError" label="Validation Error Message" data-index={index}
+                        value={row.validationError} onchange={handleValidationChange}></lightning-input>
+                </div>
+
+
+
+            </div>
+        </template>
+
+        <!-- Buttons -->
+        <div class="slds-m-around_medium">
+            <lightning-button label="Add Validation" onclick={addValidationRow}></lightning-button>
+            <lightning-button label="Remove Validation" onclick={removeValidationRow}
+                class="slds-m-left_small"></lightning-button>
+        </div>
+    </lightning-card>
+
+</template>

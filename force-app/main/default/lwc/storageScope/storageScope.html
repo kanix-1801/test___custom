@@ -1,0 +1,173 @@
+<!--
+ - Created by hadar.berman on 09/12/2021.
+ -->
+
+<!-- Storage Scope -->
+<template>
+
+    <div dir="rtl" onkeydown={handleKeyboardLeftRight} class="container">
+
+        <div class="select-content-list" if:true={openSelectContentList}>
+            <div class="close-select-content-list" style="text-align: right;">
+                <button onclick={handleExit} class="slds-button slds-button_brand">X</button>
+            </div>
+            
+            <lightning-combobox
+                    name="storageContentList"
+                    label="רשימת תכולה לאחסון"
+                    value={selectedStorageList}
+                    placeholder="Select"
+                    required	
+                    options={storageList}
+                    onchange={updateSelectedStorage}>
+            </lightning-combobox>
+
+            <lightning-combobox
+                    name="deliveryContentList"
+                    label="רשימת תכולה להובלה"
+                    value={selectedDeliveryList}
+                    placeholder="Select"
+                    required             
+                    options={deliveryList}
+                    onchange={updateSelectedDelivery}>
+            </lightning-combobox>
+
+            <div class="select-content-list-continue">
+                <lightning-button variant="brand-outline" label="המשך" onclick={afterOppUpdated} class="slds-m-left_x-small"></lightning-button>
+            </div>
+            
+        </div>
+
+
+        <div class="table-section" if:true={openTableSection}>
+
+        <div class="top-buttons">
+            <lightning-button variant="brand-outline" label="הוספת פריט" onclick={addStorageItemButton} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand-outline" label="המשך" onclick={handleContinue} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand-outline" label="יציאה" onclick={showWarningExit} class="slds-m-left_x-small"></lightning-button>
+        </div>
+
+        <div class="table-main">
+            <div class="table-top">
+                <h2> סה"כ נפח: {totalVolume}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; סה"כ ערך ביטוחי: {totalInsuranceValue}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; סה"כ כמות: {totalQuantity}</h2>
+            </div>
+
+            <div class="table-content" style="height: 616px;border-radius: 25px;">
+                <lightning-datatable
+                        key-field="index"
+                        data={data}
+                        hide-checkbox-column
+                        oncellchange={handleChange}
+                        columns={columns}
+                        suppress-bottom-bar
+                        draft-values={draftValues}>
+                </lightning-datatable>
+            </div>
+
+        </div>
+        </div>
+
+        <div class="table-section" if:true={openTransportSection}>
+
+            <div class="top-buttons">
+                <lightning-button variant="brand-outline" label="הוספת פריט" onclick={addDeliveryItemButton} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand-outline" label="שמירה" onclick={handleSave} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand-outline" label="יציאה" onclick={showWarningExit} class="slds-m-left_x-small"></lightning-button>
+            </div>
+    
+            <div class="table-main">
+                <div class="table-top">
+                    <h2> סה"כ מחיר: {totalPrice}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; סה"כ כמות: {totalDeliveryQuantity}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; סה"כ נפח: {totalVolume}</h2>
+                </div>
+    
+                <div class="table-content" style="height: 616px;border-radius: 25px;">
+                    <lightning-datatable
+                            key-field="index"
+                            data={deliveryData}
+                            hide-checkbox-column
+                            oncellchange={handleDeliveryChange}
+                            columns={deliveryColumns}
+                            suppress-bottom-bar
+                            draft-values={deliveryDraftValues}>
+                    </lightning-datatable>
+                </div>
+    
+            </div>
+        </div>
+
+
+        <!--Modals-->
+        <div class="modal-add-item" if:true={openModalAddProduct}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div onkeypress={handleEnter} class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">הוספת פריט</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+                        <div if:true={addStorageProduct}>
+                            <lightning-record-edit-form object-api-name="Product_in_Opportunity__c">
+                                <lightning-input-field field-name={productStorageField} onchange={changeProductToAdd}> </lightning-input-field>    
+                            </lightning-record-edit-form>
+                        </div>
+                        <div if:true={addDeliveryProduct}>
+                            <lightning-record-edit-form object-api-name="Product_in_Opportunity__c">
+                                <lightning-input-field field-name={productDeliveryField} onchange={changeProductToAdd}> </lightning-input-field>    
+                            </lightning-record-edit-form>
+                        </div>
+
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button onclick={closeModals} class="slds-button slds-button_neutral" style="margin-left: 4px;">ביטול</button>
+                        <button onclick={handleAddItem} class="slds-button slds-button_brand">הוסף</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+
+        <div class="modal-add-item" if:true={openModalExit}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">האם אתה בטוח?</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+
+                        <p>יציאה תגרום למחיקה של השינויים</p>
+
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button onclick={handleExit} class="slds-button slds-button_neutral" style="margin-left: 4px;">אישור</button>
+                        <button onclick={closeModals} class="slds-button slds-button_brand">ביטול</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        
+    </div>
+
+    <div class="modal-add-item" if:true={openModalSaveValidation}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                    <p>האם לעדכן את ערך הביטוח בהתאם לשינויים שבוצעו?</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button onclick={handleClickValidationNo} class={styleButtonNo} style="margin-left: 4px;">לא</button>
+                    <button onclick={handleClickValidationYes} class={styleButtonYes}>כן</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+
+    <div class="loading-style" if:true={openLoading}>
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    </div>
+
+
+
+
+</template>

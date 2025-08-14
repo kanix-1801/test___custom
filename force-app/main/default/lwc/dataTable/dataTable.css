@@ -1,0 +1,45 @@
+.summary-container {
+    display: flex;
+    flex-wrap: wrap; /* allows wrapping to new rows */
+    gap: 1rem;
+}
+
+.summary-item {
+    flex: 1 1 200px; /* min width 200px, grow as needed */
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 0.75rem 1rem;
+    text-align: center;
+}
+
+.summary-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.summary-value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--lwc-colorTextBrand);
+}
+
+/* Mobile first: full width for small screens */
+@media (max-width: 480px) {
+    .summary-item {
+        flex: 1 1 100%;
+    }
+}
+
+
+.red-cell {
+    color: #ff0000;
+    font-weight: bold;
+}
+
+.green-cell {
+    color: #008000;
+    font-weight: bold;
+}

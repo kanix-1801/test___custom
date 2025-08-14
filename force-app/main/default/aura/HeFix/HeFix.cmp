@@ -1,0 +1,4 @@
+<aura:component implements="flexipage:availableForAllPageTypes,lightning:utilityItem" access="global">
+    <ltng:require styles="{!$Resource.HeFix}" />
+    <!-- No visible UI elements at all -->
+</aura:component>

@@ -1,0 +1,63 @@
+<aura:component implements="lightning:utilityItem" access="global">
+    <aura:attribute name="notifications" type="List" default="[]"/>
+    <aura:attribute name="channelName" type="String" default="/event/Urgent_Session_Assignment__e"/>
+    <aura:attribute name="subscription" type="Object"/>
+    <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="hasNotifications" type="Boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="destroy" value="{!this}" action="{!c.doDestroy}"/>
+    
+    <lightning:empApi aura:id="empApi"/>
+    <lightning:navigation aura:id="navService"/>
+    
+    <!-- Visible notification panel -->
+    <div class="notification-container">
+        <div class="slds-card slds-m-bottom_small">
+            <div class="slds-card__header slds-grid">
+                <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="utility:notification" size="small" variant="warning"/>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span>Urgent Notifications</span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slds-card__body slds-card__body_inner">
+                <aura:if isTrue="{!v.hasNotifications}">
+                    <aura:iteration items="{!v.notifications}" var="notification" indexVar="index">
+                        <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small">
+                            <span class="slds-assistive-text">Warning</span>
+                            <h4 class="slds-text-heading_small">🚨 URGENT SESSION ASSIGNED</h4>
+                            <p><strong>Customer:</strong> {!notification.customerName}</p>
+                            <p><strong>Time:</strong> {!notification.timestamp}</p>
+                            <p><strong>Session ID:</strong> {!notification.sessionId}</p>
+                            <div class="slds-m-top_small">
+                                <lightning:button 
+                                    variant="brand" 
+                                    label="Open Session" 
+                                    onclick="{!c.openSession}"
+                                    value="{!notification.sessionId}"/>
+                                <lightning:button 
+                                    variant="neutral" 
+                                    label="Dismiss" 
+                                    onclick="{!c.dismissNotification}"
+                                    value="{!index}"/>
+                            </div>
+                        </div>
+                    </aura:iteration>
+                    
+                    <aura:set attribute="else">
+                        <p class="slds-text-color_weak">No urgent notifications</p>
+                        <p class="slds-text-body_small">Status: Listening for urgent assignments...</p>
+                        <p class="slds-text-body_small">User ID: {!v.userId}</p>
+                    </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+</aura:component>

@@ -1,0 +1,4 @@
+html[lang="he"] .region-sidebar-right {
+    padding-left: 0 !important;
+    padding-right: var(--lwc-templateGutters);
+}
