@@ -2272,7 +2272,7 @@ export default class Datatable extends LightningElement {
 
 
         console.log('outputEditedRows 2274', JSON.stringify(this.outputEditedRows));
-        
+
         this.outputEditedRows = this.outputEditedRows.map(obj => {
             const newObj = { ...obj }; // shallow copy so we don’t mutate original
             Object.keys(newObj).forEach(key => {
