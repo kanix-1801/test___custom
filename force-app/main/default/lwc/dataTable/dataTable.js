@@ -117,7 +117,11 @@ export default class Datatable extends LightningElement {
     @api outputEditedRows = [];
     @api tableIcon;
 
-
+    /////////////////////////////// for json 
+    @api isJson;
+    
+    @api jsonString;
+    
 
     // 
     @track calculaterData;
@@ -132,6 +136,20 @@ export default class Datatable extends LightningElement {
     @api outputRemovedRows = [];
     @api numberOfRowsRemoved = 0;
 
+
+
+
+    // @api outputColumnData = [];   // v4.3.3 - changed to get/set
+    @api
+    get outputColumnData() {
+        return this._outputColumnData;
+    }
+    set outputColumnData(value) {
+        this._outputColumnData = value;
+    }
+    _outputColumnData = '';
+
+
     // @api outputRemainingRows = [];   // v4.3.3 - changed to get/set
     @api
     get outputRemainingRows() {
@@ -141,6 +159,16 @@ export default class Datatable extends LightningElement {
         this._outputRemainingRows = value;
     }
     _outputRemainingRows = [];
+
+    // Selected Column Data Fields
+    @api
+    get selectedColumnDataInput() {
+        return this._selectedColumnDataInput;
+    }
+    set selectedColumnDataInput(value) {
+        this._selectedColumnDataInput = value;
+    }
+    _selectedColumnDataInput;
 
     // Formula Fields 
     @api
@@ -520,6 +548,7 @@ export default class Datatable extends LightningElement {
     @api wizFormulaFields;
     @api wizSummaryFields;
     @api wizValidationFields;
+    @api wizSelectedColumnData
 
     @api wizSObject;
     @api wizColumnFields;
@@ -970,109 +999,116 @@ export default class Datatable extends LightningElement {
 
     connectedCallback() {
         // Display the component version number in the console log
-        const logStyleText = 'color: green; font-size: 16px';
-        const logStyleNumber = 'color: red; font-size: 16px';
-        console.log("%cDATATABLE VERSION_NUMBER: %c" + CONSTANTS.VERSION_NUMBER, logStyleText, logStyleNumber);
-        console.log(this.consoleLogPrefix + 'MYDOMAIN', MYDOMAIN);
+        this.isJson = true;
+        if(!this.isJson){
+            const logStyleText = 'color: green; font-size: 16px';
+            const logStyleNumber = 'color: red; font-size: 16px';
+            console.log("%cDATATABLE VERSION_NUMBER: %c" + CONSTANTS.VERSION_NUMBER, logStyleText, logStyleNumber);
+            console.log(this.consoleLogPrefix + 'MYDOMAIN', MYDOMAIN);
+            // Picklist field processing
+            if (!this.recordTypeId) this.recordTypeId = this.masterRecordTypeId;
+            // Decode config mode attributes
+            if (this.isConfigMode) {
+    
+                this.validationFields = decodeURIComponent(this.validationFields);
+                this.summaryFields = decodeURIComponent(this.summaryFields);
+                this.formulaFields = decodeURIComponent(this.formulaFields);
+                this.selectedColumnDataInput = decodeURIComponent(this.selectedColumnDataInput);
+    
+                this.columnAlignments = decodeURIComponent(this.columnAlignments);
+                this.columnEdits = decodeURIComponent(this.columnEdits);
+                this.columnFilters = decodeURIComponent(this.columnFilters);
+                this.columnIcons = decodeURIComponent(this.columnIcons);
+                this.columnLabels = decodeURIComponent(this.columnLabels);
+                this.columnWidths = decodeURIComponent(this.columnWidths);
+                this.columnWraps = decodeURIComponent(this.columnWraps);
+                this.columnFlexes = decodeURIComponent(this.columnFlexes);
+                this.columnFields = decodeURIComponent(this.columnFields);
+                this.columnCellAttribs = decodeURIComponent(this.columnCellAttribs);
+                this.columnTypeAttribs = decodeURIComponent(this.columnTypeAttribs);
+                this.columnOtherAttribs = decodeURIComponent(this.columnOtherAttribs);
+    
+                console.log(this.consoleLogPrefix + "Config Mode Input validationFields:", this.validationFields);
+                console.log(this.consoleLogPrefix + "Config Mode Input summaryFields:", this.summaryFields);
+                console.log(this.consoleLogPrefix + "Config Mode Input formulaFields:", this.formulaFields);
+                console.log(this.consoleLogPrefix + "Config Mode Input selectedColumnDataInput:", this.selectedColumnDataInput);
+    
+    
+                console.log(this.consoleLogPrefix + "Config Mode Input columnAlignments:", this.columnAlignments);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnEdits:", this.columnEdits);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnFilters:", this.columnFilters);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnIcons:", this.columnIcons);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnLabels:", this.columnLabels);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnWidths:", this.columnWidths);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnWraps:", this.columnWraps);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnFlexes:", this.columnFlexes);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnFields:", this.columnFields);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnCellAttribs:", this.columnCellAttribs);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnTypeAttribs:", this.columnTypeAttribs);
+                console.log(this.consoleLogPrefix + "Config Mode Input columnOtherAttribs:", this.columnOtherAttribs);
+                this.not_suppressNameFieldLink = false;
+            }
 
-        // Picklist field processing
-        if (!this.recordTypeId) this.recordTypeId = this.masterRecordTypeId;
-
-        // Decode config mode attributes
-        if (this.isConfigMode) {
-
-            this.validationFields = decodeURIComponent(this.validationFields);
-            this.summaryFields = decodeURIComponent(this.summaryFields);
-            this.formulaFields = decodeURIComponent(this.formulaFields);
-
-            this.columnAlignments = decodeURIComponent(this.columnAlignments);
-            this.columnEdits = decodeURIComponent(this.columnEdits);
-            this.columnFilters = decodeURIComponent(this.columnFilters);
-            this.columnIcons = decodeURIComponent(this.columnIcons);
-            this.columnLabels = decodeURIComponent(this.columnLabels);
-            this.columnWidths = decodeURIComponent(this.columnWidths);
-            this.columnWraps = decodeURIComponent(this.columnWraps);
-            this.columnFlexes = decodeURIComponent(this.columnFlexes);
-            this.columnFields = decodeURIComponent(this.columnFields);
-            this.columnCellAttribs = decodeURIComponent(this.columnCellAttribs);
-            this.columnTypeAttribs = decodeURIComponent(this.columnTypeAttribs);
-            this.columnOtherAttribs = decodeURIComponent(this.columnOtherAttribs);
-
-            console.log(this.consoleLogPrefix + "Config Mode Input validationFields:", this.validationFields);
-            console.log(this.consoleLogPrefix + "Config Mode Input summaryFields:", this.summaryFields);
-            console.log(this.consoleLogPrefix + "Config Mode Input formulaFields:", this.formulaFields);
-
-            console.log(this.consoleLogPrefix + "Config Mode Input columnAlignments:", this.columnAlignments);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnEdits:", this.columnEdits);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnFilters:", this.columnFilters);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnIcons:", this.columnIcons);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnLabels:", this.columnLabels);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnWidths:", this.columnWidths);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnWraps:", this.columnWraps);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnFlexes:", this.columnFlexes);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnFields:", this.columnFields);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnCellAttribs:", this.columnCellAttribs);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnTypeAttribs:", this.columnTypeAttribs);
-            console.log(this.consoleLogPrefix + "Config Mode Input columnOtherAttribs:", this.columnOtherAttribs);
-            this.not_suppressNameFieldLink = false;
-        }
-
-        console.log(this.consoleLogPrefix + 'tableDataString - ', (SHOW_DEBUG_INFO) ? this._tableDataString : '***', this.isUserDefinedObject);
-
-        if (this.isUserDefinedObject) {
-            this.assignApexDefinedRecords();
-        }
-
-        // Restrict the number of records handled by this component
-        if (this.maxNumberOfRows == 0) {
-            this.maxNumberOfRows = CONSTANTS.MAXROWCOUNT;
-        }
-
-        // Pagination Initiation
-        this.initiatePagination();
-
-        console.log(this.consoleLogPrefix + 'this._tableData', (SHOW_DEBUG_INFO) ? this._tableData : '***');
-
-        if (!this._tableData) {
+            
+            
+            
+            console.log(this.consoleLogPrefix + 'tableDataString - ', (SHOW_DEBUG_INFO) ? this._tableDataString : '***', this.isUserDefinedObject);
+            
+            if (this.isUserDefinedObject) {
+                this.assignApexDefinedRecords();
+            }
+            
+            // Restrict the number of records handled by this component
+            if (this.maxNumberOfRows == 0) {
+                this.maxNumberOfRows = CONSTANTS.MAXROWCOUNT;
+            }
+            
+            // Pagination Initiation
+            this.initiatePagination();
+            
+            console.log(this.consoleLogPrefix + 'this._tableData', (SHOW_DEBUG_INFO) ? this._tableData : '***');
+            
+            if (!this._tableData) {
+                this.isUpdateTable = false;
+                this._tableData = [];
+            }
+            
+            // let max = Math.min(CONSTANTS.MAXROWCOUNT, this.maxNumberOfRows);
+            // let cnt = Math.min(this._tableData.length, max);
             this.isUpdateTable = false;
-            this._tableData = [];
-        }
-
-        // let max = Math.min(CONSTANTS.MAXROWCOUNT, this.maxNumberOfRows);
-        // let cnt = Math.min(this._tableData.length, max);
-        this.isUpdateTable = false;
-        this._tableData = [...this._tableData].slice(0, this.collectionSize);
-
-        // Set roundValue for setting Column Widths in Config Mode
-        this.roundValueLabel = `Snap each Column Width to the Nearest ${CONSTANTS.ROUNDWIDTH} pixel Boundary`;
-
-        // Get array of column field API names
-        this.columnArray = (this.columnFields.length > 0) ? this.columnFields.replace(/\s/g, '').split(',') : [];
-        this.columnFieldParameter = this.columnArray.join(', ');
-        console.log(this.consoleLogPrefix + 'columnArray - ', this.columnArray);
-
-        // JSON Version - Build basicColumns default values
-        if (this.isUserDefinedObject) {
-            this.columnArray.forEach(field => {
-                this.basicColumns.push({
-                    label: field,
-                    fieldName: field,
-                    type: 'text',
-                    scale: 0
+            this._tableData = [...this._tableData].slice(0, this.collectionSize);
+            
+            // Set roundValue for setting Column Widths in Config Mode
+            this.roundValueLabel = `Snap each Column Width to the Nearest ${CONSTANTS.ROUNDWIDTH} pixel Boundary`;
+            
+            // Get array of column field API names
+            this.columnArray = (this.columnFields.length > 0) ? this.columnFields.replace(/\s/g, '').split(',') : [];
+            this.columnFieldParameter = this.columnArray.join(', ');
+            console.log(this.consoleLogPrefix + 'columnArray - ', this.columnArray);
+            
+            // JSON Version - Build basicColumns default values
+            if (this.isUserDefinedObject){
+                this.columnArray.forEach(field => {
+                    this.basicColumns.push({
+                        label: field,
+                        fieldName: field,
+                        type: 'text',
+                        scale: 0
+                    });
+                });
+            }
+            
+            // Parse Column Alignment attribute
+            const parseAlignments = (this.columnAlignments.length > 0) ? this.columnAlignments.replace(/\s/g, '').split(',') : [];
+            this.attribCount = (parseAlignments.findIndex(f => f.search(':') != -1) != -1) ? 0 : 1;
+            parseAlignments.forEach(align => {
+                this.alignments.push({
+                    column: this.columnReference(align),
+                    alignment: columnValue(align)
                 });
             });
-        }
-
-        // Parse Column Alignment attribute
-        const parseAlignments = (this.columnAlignments.length > 0) ? this.columnAlignments.replace(/\s/g, '').split(',') : [];
-        this.attribCount = (parseAlignments.findIndex(f => f.search(':') != -1) != -1) ? 0 : 1;
-        parseAlignments.forEach(align => {
-            this.alignments.push({
-                column: this.columnReference(align),
-                alignment: columnValue(align)
-            });
-        });
-
+            
+        
         // Parse Column Edit attribute
         if (this.columnEdits.toLowerCase() != 'all') {
             const parseEdits = (this.columnEdits.length > 0) ? this.columnEdits.replace(/\s/g, '').split(',') : [];
@@ -1253,8 +1289,53 @@ export default class Datatable extends LightningElement {
         } else {
             this.showSpinner = false;
         }
+        }else{
 
+        
+        //
+        this.jsonString = `[{"Comments__c":"Test Product 2","CreatedById":"005UB00000GMwcNYAT","CreatedDate":"2025-08-18T10:42:03.000Z","Created_By_Dev__c":false,"Discount_Percent__c":null,"Fixed_Monthly_Price__c":false,"Id":"a01UB00000OhYLrYAN","Insurance_Value_Of_Product__c":76,"IsDeleted":false,"LastActivityDate":null,"LastModifiedById":"005UB00000GMwcNYAT","LastModifiedDate":"2025-08-20T06:11:23.000Z","LastReferencedDate":"2025-08-29T10:00:29.000Z","LastViewedDate":"2025-08-29T10:00:29.000Z","Line_Total_With_VAT__c":81783,"Name":"P-00394336","Opportunity__c":"006UB00000H8WXFYA3","Price__c":"699002","Product_Description__c":"Test Product 2","Product_Sub_Type__c":null,"Product_Sub_Type_for_Roll_Up__c":null,"Product_Type_For_Roll_Up__c":"אחסנה","Product_Type__c":"אחסנה","Product__c":"a00UB00000HTIEMYA5","Quantity_As_INT__c":"1","Quantity__c":1,"Storage_Product_For_Dev_Only__c":null,"SystemModstamp":"2025-08-20T06:11:23.000Z","Total_Insurance_Value_Of_Line__c":76,"Total_Line_Price__c":69900,"Total_Line_Volume__c":1,"Transport_Only__c":false,"Transport_Product_For_Dev_Only__c":null,"Unit_Price_With_Vat__c":81783,"Volume_m3__c":1}]`;
+        console.log('jsonString : -' + this.jsonString);
+        // Parse JSON string
+        this.paginatedData = JSON.parse(jsonString);
+        // console.log('DATA : -' + this.data);
+        this.isJson = true;
+        console.log('isJson : -' + this.isJson);
+
+        // this.paginatedData = data;
+
+        if (data.length > 0) {
+            // Dynamically create columns from keys
+            this.columns = Object.keys(data[0]).map(key => {
+                return {
+                    label: key,        // Column Header
+                    fieldName: key,    // Field name from data
+                    type: this.getColumnType(data[0][key]) // detect type
+                };
+            });
+        }
+        }
+        //
     }
+
+    // Detect column type dynamically
+    getColumnType(value) {
+        if (typeof value === 'number') {
+            return 'number';
+        } else if (typeof value === 'boolean') {
+            return 'boolean';
+        } else if (this.isDate(value)) {
+            return 'date';
+        } else {
+            return 'text';
+        }
+    }
+
+    // Quick check for date string
+    isDate(value) {
+        return (typeof value === 'string' && !isNaN(Date.parse(value)));
+    }
+
+    
 
     assignApexDefinedRecords() {
         // JSON input attributes
@@ -1368,8 +1449,9 @@ export default class Datatable extends LightningElement {
                                 const baseColumn = formulaValues.Formula_Column_Name.replace(/\s+/g, '_'); // The new column to add
                                 //console.log('Processing Formula Field:', baseColumn);
                                 const targetColumn = `${baseColumn}__f`;
-                                //console.log('Processing Formula Field:', targetColumn);
+                                
                                 const formula = formulaValues.formula; // The expression like 'Count__c + Data_Quality_Score__c'
+                                console.log('Processing Formula Field:', formula);
                                 row[targetColumn] = this.evaluateFormulaExpression(formula.toString(), row);
                             } catch (err) {
                                 console.error('Error evaluating expression for record:', err);
@@ -1385,7 +1467,7 @@ export default class Datatable extends LightningElement {
                     this.lookups = returnResults.lookupFieldList;
                     console.log(this.consoleLogPrefix + "Lookup Fields ~ returnResults.lookupFieldList.toString()", returnResults.lookupFieldList.toString());
                     if (this.summaryFields != null) {
-                        console.log(this.recordData);
+                        console.log('This is Record Data--> ',this.recordData);
                         this.calculateSummaryFields(this.recordData);
                     }
 
@@ -1448,6 +1530,7 @@ export default class Datatable extends LightningElement {
                     return this.errorApex;
                 });
 
+                
         }
 
         // Other processing for reactivity
@@ -2099,23 +2182,17 @@ export default class Datatable extends LightningElement {
         //call the usual handleCellChange        
         this.handleCellChange(event);
     }
-    //////////////// 2095 chnages for validation part
+
     handleCellChange(event) {
-        console.log('eVent ', JSON.stringify(event));
-        console.log('eVent Detail', JSON.stringify(event.detail));
-        //console.log('for validation --> 2095');
+
         let rowKey = event.detail.draftValues[0][this.keyField];
         //console.log('event.detail' , JSON.stringify(event.detail));
         //console.log('rowKey' , rowKey);
         let changedFieldAndValue = event.detail.draftValues[0];
-        // console.log('changedFieldAndValue : ' , changedFieldAndValue);
+        console.log('changedFieldAndValue : ' , changedFieldAndValue);
 
-        console.log('suppressBottomBar : ', this.suppressBottomBar); //false
-        //this.suppressBottomBar(true);
-        console.log('suppressBottomBar :2108 ', this.suppressBottomBar); //false
         this.saveButtonHide = !this.checkValidation(changedFieldAndValue); //false , true
-        console.log('this.checkValidation(changedFieldAndValue) : ', this.saveButtonHide);
-        // const isValid = !
+
 
         // TODO - Add validation logic here (and change cellattribute to show red background?)
         // TODO - Build collection of errors by Row/Field, Check & Clear if error is resolved, SuppressBottomBar and show messages instead if there are any errors in the collection
@@ -2133,8 +2210,6 @@ export default class Datatable extends LightningElement {
         console.log('Draft value handle dave --> ', JSON.stringify(draftValues));
         let editField = '';
 
-
-
         // Apply drafts to mydata
         let data = [...this._mydata];
         data = data.map(item => {
@@ -2147,20 +2222,15 @@ export default class Datatable extends LightningElement {
                 fieldNames.forEach(el => {
                     console.log('el:--> ', el);
                     item[el] = draft[el];
-                    if (this.suppressBottomBar && (el != this.keyField)) {
+                    if(this.suppressBottomBar && (el != this.keyField)){
                         editField = el;
-
                     }
-                }
-                );
+                });
                 item = this.calculateFormulaFields(item);
                 console.log('calculateFormulaFields calculation:--> ', JSON.stringify(item));
-
             }
-
             return item;
         });
-
 
         console.log('data after draft value applied --> ', JSON.stringify(data));
         this.calculateSummaryFields(data);
@@ -2170,8 +2240,8 @@ export default class Datatable extends LightningElement {
 
         // Apply drafts to editedData
         let edata = [...this._editedData];
-        console.log('edata : ', JSON.stringify(edata));
-        console.log('this._editedData : ', JSON.stringify(this._editedData));
+       // console.log('edata : ', JSON.stringify(edata));
+        //console.log('this._editedData : ', JSON.stringify(this._editedData));
         edata = edata.map(eitem => {
             const edraft = draftValues.find(d => d[this.keyField] == eitem[this.keyField]);
             if (edraft != undefined) {
@@ -2306,11 +2376,19 @@ export default class Datatable extends LightningElement {
         }
 
         this.savePreEditData = [...sdata];   // Resave the current table values  // v4.3.3
-
         console.log('data before my data--> ', JSON.stringify(this.calculaterData));
-
         data = [...this.calculaterData];
         this.mydata = [...data];
+
+        console.log('my outputColumnData Before save --> ', JSON.stringify(this.outputEditedRows));
+
+        console.log('my outputColumnData Before save Without String--> ', this.outputEditedRows);
+
+        this.outputColumnData = JSON.stringify([...this.outputEditedRows]);
+
+         console.log('my outputColumnData after save --> ', this.outputColumnData);
+
+
         console.log('After my data before my data--> ', this.mydata);     // Reset the current table values
 
         // this.savePreEditData = [...sdata];   // Resave the current table values  // v4.3.3
@@ -3238,8 +3316,7 @@ export default class Datatable extends LightningElement {
 
 
     //Evalution of expressions in Formula fields
-
-    evaluateFormulaExpression(expression, row) {
+  evaluateFormulaExpression(expression, row) {
         // Replace field names with row values safely
         /*  const safeExpr = expression.replace(/\b\w+(__[a-zA-Z0-9]+)?\b/g, match => {
               return `(row["${match}"] ?? 0)`; // if field is missing, default to 0
@@ -3256,7 +3333,7 @@ export default class Datatable extends LightningElement {
 
 
         // Replace field names with row values safely and ensure they are treated as numbers
-        const safeExpr = expression.replace(/[a-zA-Z_][a-zA-Z0-9_]*(__[a-zA-Z0-9_]+)?/g, match => {
+       /* const safeExpr = expression.replace(/[a-zA-Z_][a-zA-Z0-9_]*(__[a-zA-Z0-9_]+)?/g, match => {
             return `(Number(row["${match}"]) || 0)`; // Convert to number, default to 0 if missing
         });
 
@@ -3266,9 +3343,29 @@ export default class Datatable extends LightningElement {
         } catch (err) {
             console.error('Expression evaluation failed:', err);
             return 0;
+        }*/
+
+
+
+         // This regex matches all field-like identifiers (Salesforce API names)
+    const safeExpr = expression.replace(/\b[a-zA-Z_][a-zA-Z0-9_]*(__[a-zA-Z0-9_]+)?\b/g, match => {
+        // If the match exists as a field in the row, replace with its value
+        if (row.hasOwnProperty(match)) {
+            return `(Number(row["${match}"]) || 0)`;  // ensure it's numeric, default to 0
         }
+        return match; // allow literal numbers or other operators (e.g., "100")
+    });
+
+    try {
+        const fn = new Function('row', `return ${safeExpr};`);
+        return fn(row);
+    } catch (err) {
+        console.error('Expression evaluation failed:', err, 'Expression:', safeExpr);
+        return 0;
+    }
     }
 
+    
 
     // for custom summary fields
     @track summaryCalculation = [];
@@ -3316,6 +3413,7 @@ export default class Datatable extends LightningElement {
     }
 
     calculateSummaryFields(values) {
+        console.log('calculateSummaryFields called with values:', JSON.stringify(values));
         this.summaryCalculation = [];
         let summaryConfig = typeof this.summaryFields === 'string'
             ? JSON.parse(this.summaryFields)
@@ -3441,12 +3539,17 @@ export default class Datatable extends LightningElement {
 
     // convertIn 
     @track saveButtonHide = false;
+    @track validationErrors = new Map();
+    @track updateCalucalatedData ;
 
     checkValidation(changes) {
 
         this.addValidationFields();
+
         console.log('for validation chnages', changes);
         console.log('validationJson', JSON.stringify(this.validationJson));
+        const rowKey = changes.Id || changes.id;
+        const fieldErrors = {};
         let isValid = false;
         if (this.validationJson != null && this.validationJson.length != 0) {
             this.validationJson.forEach(rule => {
@@ -3457,6 +3560,7 @@ export default class Datatable extends LightningElement {
                     const changeValue = changes[ValidationField];
 
                     switch (validationOperater) {
+                        
                         case "equal":
                             isValid = changeValue == value;
                             break;
@@ -3479,17 +3583,68 @@ export default class Datatable extends LightningElement {
                             console.error(`Unknown operator '${validationOperater}' .`);
                     }
 
-                    if (isValid) {
-                        console.error(ErrorMsg);
+                    if(isValid) {
+                        console.error('Error Messgae Final-> ',ErrorMsg);
+                        fieldErrors[ValidationField] = ErrorMsg;
                         this.showToast(ErrorMsg);
                     }
                 }
-            })
+            });
+
+            //console.log('fieldErrors : ', fieldErrors);
+if(!isValid){
+                      console.log('No Error Messgae Final-> ');
+        // Apply drafts to mydata
+        let updateData = [...this._mydata];
+console.log('updateData before draft value applied --> ', JSON.stringify(updateData));
+
+const arrayChanges = Array.isArray(changes) ? changes : [changes];
+        updateData = updateData.map(item => {
+            const draft = arrayChanges.find(d => d[this.keyField] == item[this.keyField]);
+            console.log('Changes Draft value item --> ', draft);
+            if (draft != undefined) {
+                let fieldNames = Object.keys(draft);
+                console.log('Changes fieldNames:--> ', JSON.stringify(fieldNames));
+                console.log('Chnages item:--> ', JSON.stringify(item));
+                fieldNames.forEach(el => {
+                    console.log('Changes el:--> ', el);
+                    item[el] = draft[el];
+                    // if(this.suppressBottomBar && (el != this.keyField)){
+                    //     editField = el;
+                    // }
+                });
+                item = this.calculateFormulaFields(item);
+                console.log('Changes calculateFormulaFields calculation:--> ', JSON.stringify(item));
+            }
+            return item;
+        });
+
+        console.log('data after draft value applied --> ', JSON.stringify(updateData));
+        this.calculateSummaryFields(updateData);
+
+        this.updateCalucalatedData = JSON.parse(JSON.stringify(updateData));
+        console.log('after SUmmary draft value applied --> ', JSON.stringify(this.updateCalucalatedData));
+
+        updateData = [...this.updateCalucalatedData];
+        this.mydata = [...updateData];
+
+
+
+                    }
+
+
+        if (Object.keys(fieldErrors).length > 0) {
+            //let rowKeyValidationFields = rowKey+Object.keys(fieldErrors)[0];
+           // console.log('rowKeyValidationFields : ', rowKeyValidationFields);
+        this.validationErrors.set(rowKey, fieldErrors);
+    } else {
+        this.validationErrors.delete(rowKey);
+    }
         }
-        return !isValid;
+        return this.validationErrors.size === 0;;
     }
 
-    showToast(title, message, variant) {
+    showToast(title, message, variant = 'error') {
         const event = new ShowToastEvent({
             title: title,
             message: message,

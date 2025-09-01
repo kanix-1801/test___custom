@@ -56,6 +56,9 @@ export default class ers_datatableCPE extends LightningElement {
 
     versionNumber;
 
+    /// using the json create the data table --------
+    isJson = true;
+
     // Define any banner overrides you want to use (see fsc_flowBanner.js)
     _bannerMargin = 'slds-m-top_small slds-m-bottom_xx-small';
     _bannerClass = 'slds-text-color_inverse slds-text-heading_medium slds-m-bottom_xx-small';
@@ -297,8 +300,6 @@ export default class ers_datatableCPE extends LightningElement {
     }
 
 
-
-
   @api
     get wiz_formulaFields() { 
         return this._wiz_formulaFields;
@@ -518,15 +519,19 @@ export default class ers_datatableCPE extends LightningElement {
 
 
         formulaFields: {value: null, valueDataType: null, isCollection: false, label: 'Formula Fields', 
-            helpText: "REQUIRED: Comma separated list of Formula Fields to display in the datatable.",
+            helpText: "Comma separated list of Formula Fields to display in the datatable.",
             isError: false, errorMessage: null},
 
         summaryFields: {value: null, valueDataType: null, isCollection: false, label: 'Summary Fields', 
-            helpText: "REQUIRED: Comma separated list of Summary Fields to display in the datatable.",
+            helpText: "Comma separated list of Summary Fields to display in the datatable.",
             isError: false, errorMessage: null}, 
 
         validationFields: {value: null, valueDataType: null, isCollection: false, label: 'Validation Fields', 
-            helpText: "REQUIRED: Comma separated list of Validation Fields to display in the datatable.",
+            helpText: "Comma separated list of Validation Fields to display in the datatable.",
+            isError: false, errorMessage: null},  
+
+        selectedColumnDataInput: {value: null, valueDataType: null, isCollection: false, label: 'Selected Column Data Input', 
+            helpText: "Column Data to show in next screen",
             isError: false, errorMessage: null},  
 
 
@@ -785,6 +790,7 @@ export default class ers_datatableCPE extends LightningElement {
                 {name: 'formulaFields'},
                 {name: 'summaryFields'},
                 {name: 'validationFields'},
+                {name: 'selectedColumnDataInput'},
 
                 {name: 'columnFields'},
                 {name: 'columnAlignments'},
@@ -970,6 +976,7 @@ export default class ers_datatableCPE extends LightningElement {
 
         if (this.firstPass) { 
             this.handleDefaultAttributes();
+
             this.handleBuildHelpInfo();
         }
         this.firstPass = false;
@@ -978,7 +985,7 @@ export default class ers_datatableCPE extends LightningElement {
     handleDefaultAttributes() {
         console.log(DEBUG_INFO_PREFIX+'handle default attributes');
         if (this.inputValues.recordsPerPage.value == null) {
-            this.inputValues.recordsPerPage.value = RECORDS_PER_PAGE.toString();
+            this.inputValues.recordsPerPage.value = String(RECORDS_PER_PAGE);
         }
         if (this.inputValues.removeLabel.value == null) {
             this.inputValues.removeLabel.value = REMOVE_ROW_LABEL;
@@ -1514,7 +1521,7 @@ export default class ers_datatableCPE extends LightningElement {
     validate() {
         this.validateErrors.length = 0;
         // Not Apex-Defined -- Check for Object, Record Collection, Columns
-        if (this.isSObjectInput) {
+        if (this.isSObjectInput && !this.isJson){
             this.checkError((!this.isObjectSelected), 'objectName', 'You must select an Object');
             this.checkError((!this.isRecordCollectionSelected && !this.inputValues.isSerializedRecordData.value), 'tableData', 'You must provide a Collection of Records to display');
             this.checkError((!this.vFieldList), 'columnFields', 'At least 1 column must be selected');
@@ -1522,7 +1529,7 @@ export default class ers_datatableCPE extends LightningElement {
         this.checkError(this.inputValues.isSerializedRecordData.value && this.inputValues.isUserDefinedObject.value, 'isSerializedRecordData', 'Select only one option (Input data is Apex-Defined or Input data is Serialized)');
 
         let allComboboxes = this.template.querySelectorAll('c-fsc_flow-combobox');
-        if (allComboboxes) {
+        if (allComboboxes && !this.isJson) {
             allComboboxes.forEach(curCombobox => {
                 if (!curCombobox.reportValidity()) {
                     resultErrors.push('error');
@@ -1530,13 +1537,15 @@ export default class ers_datatableCPE extends LightningElement {
                 }
             });
         }
-
+        console.log('this.validateErrors : ' + this.validateErrors);
+        console.log('this.validateErrors : ' + this.validateErrors.length);
+        console.log('this.isJson : ' + this.isJson);
         return this.validateErrors;
     }
 
     checkError(isError, key, errorString) {
         this.inputValues[key].class = 'slds-form-element';
-        if (isError) { 
+        if (isError && !this.isJson) { 
             this.validateErrors.push({key: key, errorString: errorString});
             this.inputValues[key].isError = true;
             this.inputValues[key].errorMessage = errorString;

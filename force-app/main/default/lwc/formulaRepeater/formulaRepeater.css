@@ -1,0 +1,21 @@
+/* formulaRepeater.css */
+
+.section-divider {
+    border-top: 1px solid #d8dde6;
+    margin: 1.5rem 0;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1e3050;
+    margin-bottom: 0.5rem;
+}
+
+.button-spacing {
+    margin-top: 1rem;
+}
+
+.card-spacing {
+    margin-bottom: 1.5rem;
+}

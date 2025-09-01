@@ -25,7 +25,10 @@
             <property name="outputRemovedRows" label="Output Removed Rows (Collection)" type="{T[]}" role="outputOnly" description="Record Collection variable to contain only the records that were removed from the datatable. 
                 - NOTE: These records will contain all saved edited values."/>   
             <property name="outputRemainingRows" label="Output Remaining Rows (Collection)" type="{T[]}" role="outputOnly" description="Record Collection variable to contain all the original records that were not removed from the datatable. 
-                - NOTE: These records will contain all saved edited values."/>                   
+                - NOTE: These records will contain all saved edited values."/>     
+                
+            <property name="outputColumnData" label="Output Column Data" type="String" role="outputOnly" description="Column Data variable to contain all the original Values from the datatable. 
+                - NOTE: These will contain all saved edited values for the Column."/>   
     
             <!-- ============== These parameters are used when providing a User Defined object rather than a Salesforce SObject ============== -->  
             <!-- =========== Inputs =========== -->
@@ -80,6 +83,7 @@
 <property name="formulaFields" label="_ Formula Fields" type="String" role="inputOnly" description="REQUIRED: Comma separated list of Formula Fields to display in the datatable."/>
 <property name="summaryFields" label="_ Summary Fields" type="String" role="inputOnly" description="REQUIRED: Comma separated list of Summary Fields to display in the datatable."/>
 <property name="validationFields" label="_ Validation Fields" type="String" role="inputOnly" description="REQUIRED: Comma separated list of Validation Fields to display in the datatable."/>
+<property name="selectedColumnDataInput" label="_ Selected Column Data Fields" type="String" role="inputOnly" description="Column Data to show in next screen"/>
 
             <property name="columnAlignments" label="- Column Alignments (Col#:alignment,...)" type="String" role="inputOnly" description="Comma separated list of ColID:Alignment Value (left,center,right).  
                 --  NOTE: ColIDs can be either the column number or the field API Name"/>

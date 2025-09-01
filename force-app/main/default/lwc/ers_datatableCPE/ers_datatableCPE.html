@@ -1,5 +1,11 @@
 <template>
-
+    <template if:true={isJson}>
+        <div>add json here</div>
+    </template>
+    
+    
+    
+    <!-- <template if:false={isJson}> -->
     <!-- =============== Data Source Banner =============== -->
     <c-fsc_flow-banner 
         banner-color={colorWizardOverride}  
@@ -576,6 +582,20 @@
             </c-fsc_flow-combobox>
 
 
+            <!-- Selected Column Data Input Fields -->
+            <c-fsc_flow-combobox 
+                name="select_selectedColumnDataInput" 
+                label={inputValues.selectedColumnDataInput.label}
+                value={inputValues.selectedColumnDataInput.value} 
+                value-type={inputValues.selectedColumnDataInput.valueDataType}
+                field-level-help={inputValues.selectedColumnDataInput.helpText}
+                builder-context-filter-collection-boolean={inputValues.selectedColumnDataInput.isCollection}
+                builder-context={_builderContext} 
+                onvaluechanged={handleFlowComboboxValueChange}
+                automatic-output-variables={automaticOutputVariables}>
+            </c-fsc_flow-combobox>
+
+
             <!-- Formula Fields -->
             <c-fsc_flow-combobox 
                 name="select_formulaFields" 
@@ -880,4 +900,5 @@
         Datatable Version #: {versionNumber}
     </div>
 
+   <!-- </template> -->
 </template>
